@@ -18,8 +18,10 @@ L = 0.4/size
 F=alpha*dt/(L**2)
 print(f"F: {F}")
 
+
 # Começa na esquerda, CW
 limits = [None, 150, 50, 0]
+
 for i in range(len(barra)):
     for j in range(len(barra)):
         if(i==j or (i==0 and j == (size-1))):
@@ -31,6 +33,8 @@ for i in range(len(barra)):
             barra[i][j] = 0
         if(j==(size-1)):
             barra[i][j] = 50
+        if i == 0 and j ==0:
+            barra[i][j] = 150
 print(f"Barra Inicial: {barra}\n")
 nextBarra = np.copy(barra)
 while t < tMax:
@@ -55,7 +59,6 @@ while t < tMax:
     barra = np.copy(nextBarra)
     t += dt
 
-
 # plt.figure(figsize=(18,11))
 # plt.title("Distribuição de temperaturas na barra")
 # plt.plot([i*L for i in range(11)], barra)
@@ -66,3 +69,8 @@ while t < tMax:
 print(f"Tempo de convergencia: {t}\n")
 print(f"Barra Final: \n{barra}\n")
 print(f"Soma: {np.sum(barra)}")
+
+plt.figure(figsize=(10, 10))
+plt.imshow(barra, cmap='viridis', extent=(0, size, 0, size))
+plt.colorbar()
+plt.savefig("temp.png")

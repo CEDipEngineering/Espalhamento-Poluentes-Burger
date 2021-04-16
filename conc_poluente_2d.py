@@ -16,7 +16,7 @@ def main(Lx, Ly, dm, K, dQ, a, b, alpha, t, td, tMax, pipe=None):
     barra = np.zeros((int(Ly/dm), int(Lx/dm)), dtype=np.float64)
     nextBarra = np.copy(barra)
     pi_over_5 = math.pi/5
-    u = alpha
+    u = 2
     a = a/dm  # Converte posição em metros pra indíce na matriz
     b = b/dm  # ..
     dt = dm**2/(8*K)  # dt < dx**2/4K --> dt < 0.0625 / Coloquei metade disso
@@ -25,7 +25,7 @@ def main(Lx, Ly, dm, K, dQ, a, b, alpha, t, td, tMax, pipe=None):
         for i in range(int(Lx/dm)):
             for j in range(int(Ly/dm)):
                 # u é constante
-                v = alpha * math.sin(pi_over_5*i) 
+                v = 0
                 tresh=0.2
                 # Lidando com casos de bordas
                 if(i == 0):
@@ -96,7 +96,8 @@ def main(Lx, Ly, dm, K, dQ, a, b, alpha, t, td, tMax, pipe=None):
         t += dt
         # if bateu_na_borda:
         #     return barra
-    # print(barra[40][40])
+    print(np.max(barra))
+    barra = barra[::-1]
     try:
         pipe.send(barra)
         pipe.close()
@@ -108,25 +109,22 @@ if __name__ == '__main__':
     Ly = 20
     dm = 0.5
     K = 1
-    dQ = 100
+    dQ = 150
     alpha = 1
     t = 0
-    td = 3
-    tMax = 30
-    pi_over_5 = math.pi/5
-    u = alpha
-    output = [0]*3
+    td = 2
+    tMax = 6
     if True:
         pipes = []
         processes = []
-        args = [0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2]
+        args = [1]
         num_exp = len(args)
         output = [0]*num_exp
         print(f"Starting process:\n")
         start = time.perf_counter()
         for i in range(num_exp):
             pipes.append(multiprocessing.Pipe())
-            processes.append(multiprocessing.Process(target=main, args=(Lx, Ly, dm, args[i], dQ, 5, 5, alpha, t, td, tMax, pipes[i][1]), daemon=True))
+            processes.append(multiprocessing.Process(target=main, args=(Lx, Ly, dm, args[i], dQ, 3, 3, alpha, t, td, tMax, pipes[i][1]), daemon=True))
             processes[i].start()
         
         for i in range(num_exp):
@@ -143,7 +141,6 @@ if __name__ == '__main__':
         plt.colorbar()
         plt.title(f"K={args[index]} e (a,b)={(i[int(5/dm)][int(5/dm)]):.03}")
         plt.savefig("K="+str(args[index])+".png")
-        plt.show()
     
     # start2 = time.perf_counter()
     # for i in range(num_exp):
