@@ -16,17 +16,17 @@ def main(Lx, Ly, dm, K, dQ, a, b, alpha, t, td, tMax, pipe=None):
     barra = np.zeros((int(Ly/dm), int(Lx/dm)), dtype=np.float64)
     nextBarra = np.copy(barra)
     pi_over_5 = math.pi/5
-    u = alpha
+    u = 2 #alpha
     a = a/dm  # Converte posição em metros pra indíce na matriz
     b = b/dm  # ..
-    dt = dm**2/(8*K)  # dt < dx**2/4K --> dt < 0.0625 / Coloquei metade disso
+    dt = 0.06  # dt < dx**2/4K --> dt < 0.0625 / Coloquei metade disso
     bateu_na_borda = False
     while t < tMax:
         for i in range(int(Lx/dm)):
             for j in range(int(Ly/dm)):
                 # u é constante
-                v = alpha * math.sin(pi_over_5 * i)
-                tresh=0.2
+                v = 0 #alpha * math.sin(pi_over_5 * i)
+                tresh=0.02
                 # Lidando com casos de bordas
                 if(i == 0):
                     if (j != 0) and (j != int(Ly/dm)-1):
@@ -96,6 +96,7 @@ def main(Lx, Ly, dm, K, dQ, a, b, alpha, t, td, tMax, pipe=None):
         t += dt
         # if bateu_na_borda:
         #     return barra
+    print("K = ", K)
     print(np.max(barra))
     barra = barra[::-1]
     try:
@@ -105,17 +106,17 @@ def main(Lx, Ly, dm, K, dQ, a, b, alpha, t, td, tMax, pipe=None):
         return np.copy(barra)
 
 if __name__ == '__main__':
-    Lx = 30
-    Ly = 20
-    dm = 0.5
-    K = 1
-    dQ = 100
+    Lx = 30  #tamanho em x
+    Ly = 20  #tamanho em y
+    dm = 0.5 #dx e dy
+    K = 1   #coeficiente de difusão
+    dQ = 150  #taxa de derramamento 
     alpha = 1
-    t = 0
-    td = 3
-    tMax = 30
-    a = 5
-    b = 5
+    t = 0 #tempo inicial
+    td = 2 #tempo de despejo
+    tMax = 6 #tempo total
+    a = 3
+    b = 3
     if True:
         pipes = []
         processes = []
